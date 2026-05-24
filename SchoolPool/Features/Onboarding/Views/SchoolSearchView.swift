@@ -2,100 +2,100 @@ import SwiftUI
 
 struct SchoolSearchView: View {
     @ObservedObject var vm: OnboardingViewModel
-    let schoolRepo: SchoolRepositoryProtocol
+    let userEmail: String
 
-    @State private var query = ""
-    @State private var results: [School] = []
-    @State private var isSearching = false
     @State private var showFreeText = false
-    @State private var searchTask: Task<Void, Never>?
+    @State private var freeTextSchoolName = ""
 
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
                 VStack(spacing: 8) {
                     Text("Find your school")
-                        .font(.title.bold())
-                    Text("Search for your school or district")
+                        .font(.largeTitle.bold())
+                    Text("Search for your school to connect with your community")
                         .font(.subheadline)
                         .foregroundStyle(Color.spTextSecondary)
+                        .multilineTextAlignment(.center)
                 }
-                .padding(.top, 32)
+                .padding(.top, 40)
 
-                SPTextField(title: "School name", text: $query)
-                    .padding(.horizontal, 20)
-                    .onChange(of: query) { _, newValue in
-                        searchTask?.cancel()
-                        guard newValue.count >= 2 else { results = []; return }
-                        searchTask = Task {
-                            try? await Task.sleep(for: .milliseconds(350))
-                            guard !Task.isCancelled else { return }
-                            isSearching = true
-                            results = (try? await schoolRepo.search(query: newValue, limit: 20)) ?? []
-                            isSearching = false
-                        }
-                    }
+                // Search field
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(Color.spTextSecondary)
+                    TextField("Type school name…", text: Binding(
+                        get: { vm.schoolSearchText },
+                        set: { vm.schoolSearchText = $0 }
+                    ))
+                }
+                .padding(12)
+                .background(Color.spSurface)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.spTextSecondary.opacity(0.2)))
+                .padding(.horizontal, 24)
 
-                if isSearching {
-                    ProgressView()
-                } else if !results.isEmpty {
+                // Results
+                if !vm.schools.isEmpty {
                     VStack(spacing: 0) {
-                        ForEach(results) { school in
+                        ForEach(vm.schools) { school in
                             Button {
-                                Task { await vm.selectSchool(school) }
+                                vm.selectSchoolByEmailMatch(userEmail: userEmail, school: school)
                             } label: {
                                 HStack {
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text(school.name).font(.body.weight(.medium))
-                                        Text("\(school.city), \(school.state)")
-                                            .font(.caption)
-                                            .foregroundStyle(Color.spTextSecondary)
+                                        Text(school.name).font(.headline).foregroundStyle(Color.spTextPrimary)
+                                        Text("\(school.city), \(school.state)").font(.caption).foregroundStyle(Color.spTextSecondary)
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(Color.spTextSecondary)
+                                    Image(systemName: "chevron.right").foregroundStyle(Color.spTextSecondary)
                                 }
-                                .padding(.horizontal, 20)
+                                .padding(.horizontal, 16)
                                 .padding(.vertical, 14)
                             }
-                            .foregroundStyle(Color.spTextPrimary)
-                            Divider().padding(.leading, 20)
+                            Divider().padding(.leading, 16)
                         }
                     }
                     .background(Color.spSurface)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, 24)
                 }
 
-                // Free text option
+                // Free-text fallback
                 VStack(spacing: 12) {
                     Button {
-                        showFreeText.toggle()
+                        withAnimation { showFreeText.toggle() }
                     } label: {
-                        Text(showFreeText ? "Hide" : "My school isn't listed")
+                        Label("My school isn't listed", systemImage: "plus.circle")
                             .font(.subheadline)
                             .foregroundStyle(Color.spPrimary)
                     }
 
                     if showFreeText {
-                        SPTextField(title: "School name (free text)", text: $vm.freeTextSchoolName)
-                            .padding(.horizontal, 20)
+                        SPTextField(title: "School name", text: $freeTextSchoolName)
+                            .padding(.horizontal, 24)
+
                         SPButton(title: "Continue with this school") {
-                            // Use a placeholder school with no emailDomains -> routes to documentUpload
-                            Task {
-                                let placeholder = School.stub(
-                                    name: vm.freeTextSchoolName,
-                                    emailDomains: [],
-                                    isOnboarded: false
-                                )
-                                await vm.selectSchool(placeholder)
-                            }
+                            let stubSchool = School(
+                                name: freeTextSchoolName,
+                                district: nil,
+                                city: "",
+                                state: "",
+                                country: "US",
+                                emailDomains: [],
+                                adminUserIds: [],
+                                isOnboarded: false,
+                                isPending: true,
+                                createdAt: .init(),
+                                studentCount: 0
+                            )
+                            vm.selectSchool(stubSchool)
                         }
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, 24)
                     }
                 }
             }
+            .padding(.bottom, 32)
         }
         .background(Color.spBackground.ignoresSafeArea())
     }
