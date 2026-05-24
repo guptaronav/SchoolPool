@@ -1,6 +1,4 @@
-import Foundation
-
-struct PrivacySettings: Codable, Equatable {
+struct PrivacySettings: Codable, Equatable, Sendable {
     var hidePhone: Bool
     var hideAddress: Bool
     var locationSharingConsent: Bool

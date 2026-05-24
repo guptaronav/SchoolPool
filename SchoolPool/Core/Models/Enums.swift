@@ -1,6 +1,4 @@
-import Foundation
-
-enum UserRole: String, Codable, CaseIterable {
+enum UserRole: String, Codable, CaseIterable, Sendable {
     case student, parent, teacher, community, schoolAdmin, superAdmin
 
     var displayName: String {
@@ -22,15 +20,15 @@ enum UserRole: String, Codable, CaseIterable {
     }
 }
 
-enum VerificationStatus: String, Codable {
+enum VerificationStatus: String, Codable, Sendable {
     case unverified, pending, verified, rejected, suspended
 }
 
-enum VerificationRequestStatus: String, Codable {
+enum VerificationRequestStatus: String, Codable, Sendable {
     case pending, approved, rejected
 }
 
-enum PoolLevel: String, Codable, CaseIterable {
+enum PoolLevel: String, Codable, CaseIterable, Sendable {
     case ripple, stream, river, lake, ocean
 
     var minimumDroplets: Int {
