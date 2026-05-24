@@ -15,7 +15,8 @@ enum Keychain {
             kSecAttrAccount as String: key.rawValue,
             kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
         ]
-        SecItemDelete(query as CFDictionary)
+        let deleteStatus = SecItemDelete(query as CFDictionary)
+        guard deleteStatus == errSecSuccess || deleteStatus == errSecItemNotFound else { return false }
         var insert = query
         insert[kSecValueData as String] = data
         return SecItemAdd(insert as CFDictionary, nil) == errSecSuccess
