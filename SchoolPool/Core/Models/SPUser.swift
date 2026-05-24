@@ -1,6 +1,6 @@
-import FirebaseFirestore
+@preconcurrency import FirebaseFirestore
 
-struct SPUser: Codable, Identifiable, @unchecked Sendable {
+struct SPUser: Codable, Identifiable, Sendable {
     @DocumentID var id: String?
     var displayName: String
     var email: String
