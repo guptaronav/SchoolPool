@@ -4,61 +4,49 @@ import XCTest
 @MainActor
 final class OnboardingViewModelTests: XCTestCase {
 
-    private func makeVM(userId: String = "user_001") -> (OnboardingViewModel, MockAuthService, MockUserRepository, MockSchoolRepository, MockVerificationService) {
-        let auth = MockAuthService()
-        let userRepo = MockUserRepository()
-        let schoolRepo = MockSchoolRepository()
-        let verification = MockVerificationService()
-        let vm = OnboardingViewModel(
-            userId: userId,
+    private func makeVM(
+        auth: MockAuthService = MockAuthService(),
+        schoolRepo: MockSchoolRepository = MockSchoolRepository(),
+        verificationService: MockVerificationService = MockVerificationService()
+    ) -> OnboardingViewModel {
+        OnboardingViewModel(
             auth: auth,
-            userRepo: userRepo,
+            userRepo: MockUserRepository(),
             schoolRepo: schoolRepo,
-            verification: verification
+            verificationService: verificationService
         )
-        return (vm, auth, userRepo, schoolRepo, verification)
     }
 
     func test_selectRole_advancesToSchoolStep() {
-        let (vm, _, _, _, _) = makeVM()
+        let vm = makeVM()
         vm.selectRole(.student)
         XCTAssertEqual(vm.step, .school)
         XCTAssertEqual(vm.selectedRole, .student)
     }
 
-    func test_selectSchool_matchingDomain_routesToEmailWaiting() async {
-        let (vm, _, userRepo, _, _) = makeVM()
-        var user = SPUser.stub(email: "alex@lincoln.edu")
-        user.id = "user_001"
-        userRepo.users["user_001"] = user
-
+    func test_selectSchoolByEmailMatch_withMatchingDomain_routesToEmailWaiting() {
+        let vm = makeVM()
         let school = School.stub(emailDomains: ["lincoln.edu"])
-        vm.selectRole(.student)
-        await vm.selectSchool(school)
-
+        vm.selectSchoolByEmailMatch(userEmail: "student@lincoln.edu", school: school)
         XCTAssertEqual(vm.step, .emailWaiting)
     }
 
-    func test_selectSchool_nonMatchingDomain_routesToDocumentUpload() async {
-        let (vm, _, userRepo, _, _) = makeVM()
-        var user = SPUser.stub(email: "alex@gmail.com")
-        user.id = "user_001"
-        userRepo.users["user_001"] = user
-
+    func test_selectSchoolByEmailMatch_withNonMatchingDomain_routesToDocumentUpload() {
+        let vm = makeVM()
         let school = School.stub(emailDomains: ["lincoln.edu"])
-        vm.selectRole(.student)
-        await vm.selectSchool(school)
-
+        vm.selectSchoolByEmailMatch(userEmail: "student@other.edu", school: school)
         XCTAssertEqual(vm.step, .documentUpload)
     }
 
-    func test_submitDocuments_emptyDocuments_setsErrorMessage() async {
-        let (vm, _, _, _, _) = makeVM()
-        vm.documents = []
-        vm.studentIdNumber = "12345"
+    func test_submitDocuments_withEmptyDocuments_setsErrorMessage() async {
+        let vm = makeVM()
+        await vm.submitDocuments(studentIdHash: "12345", documents: [])
+        XCTAssertNotNil(vm.errorMessage)
+    }
 
-        await vm.submitDocuments()
-
+    func test_submitDocuments_withEmptyStudentId_setsErrorMessage() async {
+        let vm = makeVM()
+        await vm.submitDocuments(studentIdHash: "  ", documents: [Data([1, 2, 3])])
         XCTAssertNotNil(vm.errorMessage)
     }
 }
