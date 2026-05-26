@@ -33,12 +33,6 @@ final class AuthService: NSObject, AuthServiceProtocol {
     // MARK: - Google Sign-In
 
     func signInWithGoogle() async throws -> String {
-        // Configure with the CLIENT_ID from GoogleService-Info.plist via Firebase
-        guard let clientID = FirebaseApp.app()?.options.clientID else {
-            throw AuthError.missingClientID
-        }
-        GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: clientID)
-
         guard let windowScene = UIApplication.shared.connectedScenes
             .compactMap({ $0 as? UIWindowScene })
             .first(where: { $0.activationState == .foregroundActive }),
