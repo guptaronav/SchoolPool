@@ -13,13 +13,15 @@ final class VerificationService: VerificationServiceProtocol {
         for (i, data) in documents.enumerated() {
             let path = "verifications/\(req.userId)/\(UUID().uuidString)-\(i).jpg"
             let ref = storage.child(path)
-            _ = try await ref.putDataAsync(data, metadata: nil)
+            let metadata = StorageMetadata()
+            metadata.contentType = "image/jpeg"
+            _ = try await ref.putDataAsync(data, metadata: metadata)
             paths.append(path)
         }
         req.documentStoragePaths = paths
 
         let docRef = db.collection("verificationRequests").document()
-        try docRef.setData(from: req)
+        try await docRef.setData(from: req)
 
         try await db.collection("users").document(req.userId).updateData([
             "verificationStatus": VerificationStatus.pending.rawValue
