@@ -32,8 +32,10 @@ final class AuthService: NSObject, AuthServiceProtocol {
     // MARK: - Google Sign-In
 
     func signInWithGoogle() async throws -> String {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let rootViewController = windowScene.windows.first?.rootViewController else {
+        guard let windowScene = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first(where: { $0.activationState == .foregroundActive }),
+              let rootViewController = windowScene.keyWindow?.rootViewController else {
             throw AuthError.noRootViewController
         }
 
