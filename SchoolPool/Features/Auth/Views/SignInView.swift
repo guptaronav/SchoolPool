@@ -1,5 +1,4 @@
 import SwiftUI
-import AuthenticationServices
 
 struct SignInView: View {
     @ObservedObject var vm: AuthViewModel
@@ -54,15 +53,25 @@ struct SignInView: View {
                         Rectangle().frame(height: 1).foregroundStyle(Color.spTextSecondary.opacity(0.2))
                     }
 
-                    // Sign in with Apple
-                    SignInWithAppleButton(.signIn) { request in
-                        request.requestedScopes = [.fullName, .email]
-                    } onCompletion: { _ in
-                        Task { await vm.signInWithApple() }
+                    // Google Sign-In button
+                    Button {
+                        Task { await vm.signInWithGoogle() }
+                    } label: {
+                        HStack(spacing: 10) {
+                            Image(systemName: "globe")
+                                .font(.system(size: 18, weight: .medium))
+                            Text("Continue with Google")
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 52)
+                        .foregroundStyle(Color.spTextPrimary)
+                        .background(Color.spSurface)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14)
+                                .stroke(Color.spTextSecondary.opacity(0.3), lineWidth: 1)
+                        )
                     }
-                    .signInWithAppleButtonStyle(.black)
-                    .frame(height: 52)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, 32)

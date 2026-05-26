@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AA00000000000000000G0003 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000G0002 /* GoogleSignIn */; };
+		B542B4C02FC2F12D00E6C9FF /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000F0001 /* FirebaseCore */; };
+		B542B4C12FC2F12D00E6C9FF /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000F0002 /* FirebaseAuth */; };
+		B542B4C22FC2F12D00E6C9FF /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000F0003 /* FirebaseFirestore */; };
+		B542B4C32FC2F12D00E6C9FF /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000F0004 /* FirebaseStorage */; };
+		B542B4C42FC2F12D00E6C9FF /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000F0005 /* FirebaseMessaging */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		B5ED8DA22FC2E28E00942410 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +61,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B542B4C42FC2F12D00E6C9FF /* FirebaseMessaging in Frameworks */,
+				B542B4C32FC2F12D00E6C9FF /* FirebaseStorage in Frameworks */,
+				B542B4C22FC2F12D00E6C9FF /* FirebaseFirestore in Frameworks */,
+				B542B4C12FC2F12D00E6C9FF /* FirebaseAuth in Frameworks */,
+				B542B4C02FC2F12D00E6C9FF /* FirebaseCore in Frameworks */,
+				AA00000000000000000G0003 /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +127,12 @@
 			);
 			name = SchoolPool;
 			packageProductDependencies = (
+				AA00000000000000000F0001 /* FirebaseCore */,
+				AA00000000000000000F0002 /* FirebaseAuth */,
+				AA00000000000000000F0003 /* FirebaseFirestore */,
+				AA00000000000000000F0004 /* FirebaseStorage */,
+				AA00000000000000000F0005 /* FirebaseMessaging */,
+				AA00000000000000000G0002 /* GoogleSignIn */,
 			);
 			productName = SchoolPool;
 			productReference = B5ED8D912FC2E28B00942410 /* SchoolPool.app */;
@@ -195,6 +216,10 @@
 			);
 			mainGroup = B5ED8D882FC2E28B00942410;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B5ED8DC22FC2E71800942410 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				AA00000000000000000G0001 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B5ED8D922FC2E28B00942410 /* Products */;
 			projectDirPath = "";
@@ -399,6 +424,7 @@
 				DEVELOPMENT_TEAM = LPU8C59HD4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_ADDITIONAL_FILE = SchoolPool/GoogleURLScheme.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -428,6 +454,7 @@
 				DEVELOPMENT_TEAM = LPU8C59HD4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_ADDITIONAL_FILE = SchoolPool/GoogleURLScheme.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -558,6 +585,58 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B5ED8DC22FC2E71800942410 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+		AA00000000000000000G0001 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AA00000000000000000F0001 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5ED8DC22FC2E71800942410 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		AA00000000000000000F0002 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5ED8DC22FC2E71800942410 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		AA00000000000000000F0003 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5ED8DC22FC2E71800942410 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		AA00000000000000000F0004 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5ED8DC22FC2E71800942410 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		AA00000000000000000F0005 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5ED8DC22FC2E71800942410 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		AA00000000000000000G0002 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA00000000000000000G0001 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B5ED8D892FC2E28B00942410 /* Project object */;
 }

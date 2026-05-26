@@ -14,15 +14,15 @@ final class MockAuthService: AuthServiceProtocol {
     var currentUserPublisher: AnyPublisher<String?, Never> { subject.eraseToAnyPublisher() }
     var isCurrentEmailVerified: Bool { isEmailVerified }
 
-    private(set) var signInWithAppleCallCount = 0
+    private(set) var signInWithGoogleCallCount = 0
     private(set) var signInWithEmailCallCount = 0
     private(set) var signUpCallCount = 0
     private(set) var signOutCallCount = 0
     private(set) var sendEmailVerificationCallCount = 0
     private(set) var reloadCurrentUserCallCount = 0
 
-    func signInWithApple() async throws -> String {
-        signInWithAppleCallCount += 1
+    func signInWithGoogle() async throws -> String {
+        signInWithGoogleCallCount += 1
         if shouldThrowOnSignIn { throw MockError.intentional }
         subject.send(stubbedUid)
         return stubbedUid

@@ -20,10 +20,10 @@ final class AuthViewModel: ObservableObject {
         self.userRepo = userRepo
     }
 
-    func signInWithApple() async {
+    func signInWithGoogle() async {
         state = .loading
         do {
-            let uid = try await auth.signInWithApple()
+            let uid = try await auth.signInWithGoogle()
             await ensureUserDoc(uid: uid)
             state = .signedIn(uid: uid)
         } catch {

@@ -1,8 +1,7 @@
 import UIKit
 import Foundation
 import Combine
-import AuthenticationServices
-import CryptoKit
+import GoogleSignIn
 @preconcurrency import FirebaseAuth
 
 @MainActor
@@ -10,9 +9,7 @@ final class AuthService: NSObject, AuthServiceProtocol {
 
     static let shared = AuthService()
 
-    nonisolated(unsafe) private let subject = CurrentValueSubject<String?, Never>(Auth.auth().currentUser?.uid)
-    nonisolated(unsafe) private var currentNonce: String?
-    nonisolated(unsafe) private var siwaContinuation: CheckedContinuation<String, Error>?
+    private let subject = CurrentValueSubject<String?, Never>(Auth.auth().currentUser?.uid)
     private var authStateListener: AuthStateDidChangeListenerHandle?
 
     override init() {
@@ -22,28 +19,32 @@ final class AuthService: NSObject, AuthServiceProtocol {
         }
     }
 
-    nonisolated var currentUserId: String? { Auth.auth().currentUser?.uid }
-    nonisolated var currentUserPublisher: AnyPublisher<String?, Never> { subject.eraseToAnyPublisher() }
-    nonisolated var isCurrentEmailVerified: Bool { Auth.auth().currentUser?.isEmailVerified ?? false }
-
-    // MARK: - Sign in with Apple
-
-    func signInWithApple() async throws -> String {
-        let nonce = Self.randomNonceString()
-        currentNonce = nonce
-
-        let request = ASAuthorizationAppleIDProvider().createRequest()
-        request.requestedScopes = [.fullName, .email]
-        request.nonce = Self.sha256(nonce)
-
-        let controller = ASAuthorizationController(authorizationRequests: [request])
-        controller.delegate = self
-        controller.presentationContextProvider = self
-
-        return try await withCheckedThrowingContinuation { continuation in
-            self.siwaContinuation = continuation
-            controller.performRequests()
+    deinit {
+        if let listener = authStateListener {
+            Auth.auth().removeStateDidChangeListener(listener)
         }
+    }
+
+    var currentUserId: String? { Auth.auth().currentUser?.uid }
+    var currentUserPublisher: AnyPublisher<String?, Never> { subject.eraseToAnyPublisher() }
+    var isCurrentEmailVerified: Bool { Auth.auth().currentUser?.isEmailVerified ?? false }
+
+    // MARK: - Google Sign-In
+
+    func signInWithGoogle() async throws -> String {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootViewController = windowScene.windows.first?.rootViewController else {
+            throw AuthError.noRootViewController
+        }
+
+        let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+        guard let idToken = result.user.idToken?.tokenString else {
+            throw AuthError.missingIDToken
+        }
+        let accessToken = result.user.accessToken.tokenString
+        let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
+        let authResult = try await Auth.auth().signIn(with: credential)
+        return authResult.user.uid
     }
 
     // MARK: - Email / Password
@@ -71,7 +72,8 @@ final class AuthService: NSObject, AuthServiceProtocol {
         try await Auth.auth().currentUser?.reload()
     }
 
-    nonisolated func signOut() throws {
+    func signOut() throws {
+        GIDSignIn.sharedInstance.signOut()
         try Auth.auth().signOut()
     }
 
@@ -79,101 +81,13 @@ final class AuthService: NSObject, AuthServiceProtocol {
         guard let user = Auth.auth().currentUser else { throw AuthError.notSignedIn }
         try await user.delete()
     }
-
-    // MARK: - Nonce helpers
-
-    private static func randomNonceString(length: Int = 32) -> String {
-        precondition(length > 0)
-        let charset = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._")
-        var result = ""
-        var remaining = length
-        while remaining > 0 {
-            var random: UInt8 = 0
-            _ = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
-            if random < charset.count {
-                result.append(charset[Int(random)])
-                remaining -= 1
-            }
-        }
-        return result
-    }
-
-    private static func sha256(_ input: String) -> String {
-        let hashed = SHA256.hash(data: Data(input.utf8))
-        return hashed.compactMap { String(format: "%02x", $0) }.joined()
-    }
 }
 
 // MARK: - AuthError
 
 enum AuthError: Error {
     case notSignedIn
-    case missingIdentityToken
-    case invalidAppleCredential
-}
-
-// MARK: - ASAuthorizationControllerDelegate
-
-extension AuthService: ASAuthorizationControllerDelegate {
-    nonisolated func authorizationController(
-        controller: ASAuthorizationController,
-        didCompleteWithAuthorization authorization: ASAuthorization
-    ) {
-        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
-              let nonce = currentNonce,
-              let tokenData = credential.identityToken,
-              let idToken = String(data: tokenData, encoding: .utf8) else {
-            Task { @MainActor in
-                self.siwaContinuation?.resume(throwing: AuthError.invalidAppleCredential)
-                self.siwaContinuation = nil
-            }
-            return
-        }
-
-        let firebaseCredential = OAuthProvider.credential(
-            providerID: AuthProviderID.apple,
-            idToken: idToken,
-            rawNonce: nonce
-        )
-
-        Task { @MainActor in
-            do {
-                let result = try await Auth.auth().signIn(with: firebaseCredential)
-                if let givenName = credential.fullName?.givenName,
-                   let familyName = credential.fullName?.familyName,
-                   result.additionalUserInfo?.isNewUser == true {
-                    let change = result.user.createProfileChangeRequest()
-                    change.displayName = "\(givenName) \(familyName)"
-                    try? await change.commitChanges()
-                }
-                self.siwaContinuation?.resume(returning: result.user.uid)
-            } catch {
-                self.siwaContinuation?.resume(throwing: error)
-            }
-            self.siwaContinuation = nil
-        }
-    }
-
-    nonisolated func authorizationController(
-        controller: ASAuthorizationController,
-        didCompleteWithError error: Error
-    ) {
-        Task { @MainActor in
-            self.siwaContinuation?.resume(throwing: error)
-            self.siwaContinuation = nil
-        }
-    }
-}
-
-// MARK: - ASAuthorizationControllerPresentationContextProviding
-
-extension AuthService: ASAuthorizationControllerPresentationContextProviding {
-    nonisolated func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        MainActor.assumeIsolated {
-            UIApplication.shared.connectedScenes
-                .compactMap { $0 as? UIWindowScene }
-                .flatMap { $0.windows }
-                .first { $0.isKeyWindow } ?? ASPresentationAnchor()
-        }
-    }
+    case missingClientID
+    case missingIDToken
+    case noRootViewController
 }
