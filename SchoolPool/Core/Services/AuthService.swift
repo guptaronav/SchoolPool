@@ -35,11 +35,17 @@ final class AuthService: NSObject, AuthServiceProtocol {
         guard let windowScene = UIApplication.shared.connectedScenes
             .compactMap({ $0 as? UIWindowScene })
             .first(where: { $0.activationState == .foregroundActive }),
-              let rootViewController = windowScene.keyWindow?.rootViewController else {
+              let root = windowScene.keyWindow?.rootViewController else {
             throw AuthError.noRootViewController
         }
 
-        let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+        // Walk to the topmost presented VC — required when SignInView is open as a sheet
+        var presenter = root
+        while let presented = presenter.presentedViewController {
+            presenter = presented
+        }
+
+        let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: presenter)
         guard let idToken = result.user.idToken?.tokenString else {
             throw AuthError.missingIDToken
         }
