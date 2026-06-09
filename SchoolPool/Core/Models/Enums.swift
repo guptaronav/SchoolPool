@@ -45,3 +45,23 @@ enum PoolLevel: String, Codable, CaseIterable, Sendable {
         PoolLevel.allCases.last(where: { count >= $0.minimumDroplets }) ?? .ripple
     }
 }
+
+enum RideStatus: String, Codable, CaseIterable, Sendable {
+    case open, full, completed, cancelled
+}
+
+enum DayOfWeek: String, Codable, CaseIterable, Sendable {
+    case monday, tuesday, wednesday, thursday, friday, saturday, sunday
+
+    var shortName: String {
+        switch self {
+        case .monday: return "M"
+        case .tuesday: return "T"
+        case .wednesday: return "W"
+        case .thursday: return "T"
+        case .friday: return "F"
+        case .saturday: return "S"
+        case .sunday: return "S"
+        }
+    }
+}

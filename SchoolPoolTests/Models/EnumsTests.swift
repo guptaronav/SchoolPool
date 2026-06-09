@@ -32,4 +32,26 @@ final class EnumsTests: XCTestCase {
         XCTAssertTrue(p.hideAddress)
         XCTAssertFalse(p.locationSharingConsent)
     }
+
+    func test_rideStatus_allCases() {
+        XCTAssertEqual(RideStatus.allCases.count, 4)
+        let statuses: [RideStatus] = [.open, .full, .completed, .cancelled]
+        XCTAssertEqual(RideStatus.allCases.sorted(by: { $0.rawValue < $1.rawValue }), statuses.sorted(by: { $0.rawValue < $1.rawValue }))
+    }
+
+    func test_dayOfWeek_allCases() {
+        XCTAssertEqual(DayOfWeek.allCases.count, 7)
+        let days: [DayOfWeek] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+        XCTAssertEqual(DayOfWeek.allCases.count, days.count)
+    }
+
+    func test_dayOfWeek_shortNames() {
+        XCTAssertEqual(DayOfWeek.monday.shortName, "M")
+        XCTAssertEqual(DayOfWeek.tuesday.shortName, "T")
+        XCTAssertEqual(DayOfWeek.wednesday.shortName, "W")
+        XCTAssertEqual(DayOfWeek.thursday.shortName, "T")
+        XCTAssertEqual(DayOfWeek.friday.shortName, "F")
+        XCTAssertEqual(DayOfWeek.saturday.shortName, "S")
+        XCTAssertEqual(DayOfWeek.sunday.shortName, "S")
+    }
 }
