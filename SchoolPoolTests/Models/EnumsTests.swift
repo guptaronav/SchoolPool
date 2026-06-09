@@ -47,11 +47,16 @@ final class EnumsTests: XCTestCase {
 
     func test_dayOfWeek_shortNames() {
         XCTAssertEqual(DayOfWeek.monday.shortName, "M")
-        XCTAssertEqual(DayOfWeek.tuesday.shortName, "T")
+        XCTAssertEqual(DayOfWeek.tuesday.shortName, "Tu")
         XCTAssertEqual(DayOfWeek.wednesday.shortName, "W")
-        XCTAssertEqual(DayOfWeek.thursday.shortName, "T")
+        XCTAssertEqual(DayOfWeek.thursday.shortName, "Th")
         XCTAssertEqual(DayOfWeek.friday.shortName, "F")
-        XCTAssertEqual(DayOfWeek.saturday.shortName, "S")
-        XCTAssertEqual(DayOfWeek.sunday.shortName, "S")
+        XCTAssertEqual(DayOfWeek.saturday.shortName, "Sa")
+        XCTAssertEqual(DayOfWeek.sunday.shortName, "Su")
+    }
+
+    func test_dayOfWeek_shortNames_areUnique() {
+        let shortNames = DayOfWeek.allCases.map(\.shortName)
+        XCTAssertEqual(shortNames.count, Set(shortNames).count, "Day abbreviations must be unique")
     }
 }

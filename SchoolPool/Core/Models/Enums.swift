@@ -56,12 +56,12 @@ enum DayOfWeek: String, Codable, CaseIterable, Sendable {
     var shortName: String {
         switch self {
         case .monday: return "M"
-        case .tuesday: return "T"
+        case .tuesday: return "Tu"
         case .wednesday: return "W"
-        case .thursday: return "T"
+        case .thursday: return "Th"
         case .friday: return "F"
-        case .saturday: return "S"
-        case .sunday: return "S"
+        case .saturday: return "Sa"
+        case .sunday: return "Su"
         }
     }
 }
