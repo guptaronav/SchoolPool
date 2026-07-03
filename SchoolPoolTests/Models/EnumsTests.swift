@@ -32,4 +32,31 @@ final class EnumsTests: XCTestCase {
         XCTAssertTrue(p.hideAddress)
         XCTAssertFalse(p.locationSharingConsent)
     }
+
+    func test_rideStatus_allCases() {
+        XCTAssertEqual(RideStatus.allCases.count, 5)
+        let statuses: [RideStatus] = [.open, .full, .inProgress, .completed, .cancelled]
+        XCTAssertEqual(RideStatus.allCases.sorted(by: { $0.rawValue < $1.rawValue }), statuses.sorted(by: { $0.rawValue < $1.rawValue }))
+    }
+
+    func test_dayOfWeek_allCases() {
+        XCTAssertEqual(DayOfWeek.allCases.count, 7)
+        let days: [DayOfWeek] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+        XCTAssertEqual(DayOfWeek.allCases.count, days.count)
+    }
+
+    func test_dayOfWeek_shortNames() {
+        XCTAssertEqual(DayOfWeek.monday.shortName, "M")
+        XCTAssertEqual(DayOfWeek.tuesday.shortName, "Tu")
+        XCTAssertEqual(DayOfWeek.wednesday.shortName, "W")
+        XCTAssertEqual(DayOfWeek.thursday.shortName, "Th")
+        XCTAssertEqual(DayOfWeek.friday.shortName, "F")
+        XCTAssertEqual(DayOfWeek.saturday.shortName, "Sa")
+        XCTAssertEqual(DayOfWeek.sunday.shortName, "Su")
+    }
+
+    func test_dayOfWeek_shortNames_areUnique() {
+        let shortNames = DayOfWeek.allCases.map(\.shortName)
+        XCTAssertEqual(shortNames.count, Set(shortNames).count, "Day abbreviations must be unique")
+    }
 }

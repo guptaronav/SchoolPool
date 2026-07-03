@@ -62,7 +62,7 @@ final class AuthViewModel: ObservableObject {
     }
 
     private func ensureUserDoc(uid: String, email: String = "", displayName: String = "") async {
-        if let existing = try? await userRepo.fetch(id: uid), existing != nil { return }
+        if (try? await userRepo.fetch(id: uid)) != nil { return }
         var newUser = SPUser.stub(
             displayName: displayName.isEmpty ? "New User" : displayName,
             email: email,

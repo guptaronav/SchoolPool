@@ -30,6 +30,18 @@ final class UserRepository: UserRepositoryProtocol {
         ])
     }
 
+    func addNotificationToken(_ token: String, for userId: String) async throws {
+        try await db.collection("users").document(userId).updateData([
+            "notificationTokens": FieldValue.arrayUnion([token])
+        ])
+    }
+
+    func removeNotificationToken(_ token: String, for userId: String) async throws {
+        try await db.collection("users").document(userId).updateData([
+            "notificationTokens": FieldValue.arrayRemove([token])
+        ])
+    }
+
     func observeUser(id: String) -> AnyPublisher<SPUser?, Never> {
         let subject = PassthroughSubject<SPUser?, Never>()
         listeners[id]?.remove()
