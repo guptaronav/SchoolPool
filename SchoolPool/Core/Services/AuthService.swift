@@ -10,7 +10,8 @@ final class AuthService: NSObject, AuthServiceProtocol {
 
     static let shared = AuthService()
 
-    private let subject = CurrentValueSubject<String?, Never>(Auth.auth().currentUser?.uid)
+    // Thread-safe Combine subject; accessed from nonisolated accessors and the auth-state callback.
+    nonisolated(unsafe) private let subject = CurrentValueSubject<String?, Never>(Auth.auth().currentUser?.uid)
     private var authStateListener: AuthStateDidChangeListenerHandle?
 
     override init() {
@@ -26,9 +27,9 @@ final class AuthService: NSObject, AuthServiceProtocol {
         }
     }
 
-    var currentUserId: String? { Auth.auth().currentUser?.uid }
-    var currentUserPublisher: AnyPublisher<String?, Never> { subject.eraseToAnyPublisher() }
-    var isCurrentEmailVerified: Bool { Auth.auth().currentUser?.isEmailVerified ?? false }
+    nonisolated var currentUserId: String? { Auth.auth().currentUser?.uid }
+    nonisolated var currentUserPublisher: AnyPublisher<String?, Never> { subject.eraseToAnyPublisher() }
+    nonisolated var isCurrentEmailVerified: Bool { Auth.auth().currentUser?.isEmailVerified ?? false }
 
     // MARK: - Google Sign-In
 
@@ -81,7 +82,7 @@ final class AuthService: NSObject, AuthServiceProtocol {
         try await Auth.auth().currentUser?.reload()
     }
 
-    func signOut() throws {
+    nonisolated func signOut() throws {
         GIDSignIn.sharedInstance.signOut()
         try Auth.auth().signOut()
     }

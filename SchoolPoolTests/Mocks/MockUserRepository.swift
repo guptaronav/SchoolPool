@@ -40,6 +40,18 @@ final class MockUserRepository: UserRepositoryProtocol {
         subject.send(u)
     }
 
+    func addNotificationToken(_ token: String, for userId: String) async throws {
+        guard var u = users[userId] else { return }
+        if !u.notificationTokens.contains(token) { u.notificationTokens.append(token) }
+        users[userId] = u
+    }
+
+    func removeNotificationToken(_ token: String, for userId: String) async throws {
+        guard var u = users[userId] else { return }
+        u.notificationTokens.removeAll { $0 == token }
+        users[userId] = u
+    }
+
     func observeUser(id: String) -> AnyPublisher<SPUser?, Never> {
         subject.eraseToAnyPublisher()
     }

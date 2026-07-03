@@ -1,20 +1,32 @@
 import SwiftUI
 
 struct MainTabView: View {
-    let userId: String
+    let user: SPUser
     let userRepo: UserRepositoryProtocol
+    let rideRepo: RideRepositoryProtocol
+    let bookingService: BookingServiceProtocol
+    let chatService: ChatServiceProtocol
+    let ratingService: RatingServiceProtocol
+    let authService: AuthServiceProtocol
     let onSignOut: () -> Void
+
+    private var userId: String { user.id ?? "" }
 
     var body: some View {
         TabView {
-            // Placeholder tabs
-            Text("Home").tabItem { Label("Home", systemImage: "house.fill") }
-            Text("Rides").tabItem { Label("Rides", systemImage: "car.fill") }
-            Text("Events").tabItem { Label("Events", systemImage: "calendar") }
-            Text("Messages").tabItem { Label("Messages", systemImage: "message.fill") }
+            RidesHomeView(
+                user: user, rideRepo: rideRepo, bookingService: bookingService,
+                chatService: chatService, ratingService: ratingService
+            )
+            .tabItem { Label("Rides", systemImage: "car.fill") }
 
-            // Functional profile tab
-            ProfileView(userId: userId, userRepo: userRepo, onSignOut: onSignOut)
+            TripHistoryView(
+                user: user, rideRepo: rideRepo, bookingService: bookingService,
+                chatService: chatService, ratingService: ratingService
+            )
+            .tabItem { Label("Trips", systemImage: "clock.arrow.circlepath") }
+
+            ProfileView(userId: userId, userRepo: userRepo, authService: authService, onSignOut: onSignOut)
                 .tabItem { Label("Profile", systemImage: "person.fill") }
         }
         .tint(Color.spPrimary)
