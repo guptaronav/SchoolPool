@@ -10,6 +10,10 @@ struct RootView: View {
     private let userRepo: UserRepositoryProtocol
     private let schoolRepo: SchoolRepositoryProtocol
     private let verificationService: VerificationServiceProtocol
+    private let rideRepo: RideRepositoryProtocol
+    private let bookingService: BookingServiceProtocol
+    private let chatService: ChatServiceProtocol
+    private let ratingService: RatingServiceProtocol
 
     init() {
         let auth = AuthService.shared
@@ -20,6 +24,11 @@ struct RootView: View {
         self.userRepo = userRepo
         self.schoolRepo = schoolRepo
         self.verificationService = verificationService
+        self.rideRepo = RideRepository()
+        self.bookingService = BookingService()
+        self.chatService = ChatService()
+        self.ratingService = RatingService()
+        PushNotificationManager.shared.configure(userRepo: userRepo)
     }
 
     var body: some View {
@@ -48,19 +57,26 @@ struct RootView: View {
                 NavigationStack {
                     PendingApprovalView(
                         vm: makeOnboardingVM(uid: currentUser?.id ?? ""),
-                        onSignOut: { try? AuthService.shared.signOut() }
+                        onSignOut: signOut
                     )
                 }
 
             case .suspended:
                 SuspendedView()
 
-            case .verified(let uid):
-                MainTabView(
-                    userId: uid,
-                    userRepo: userRepo,
-                    onSignOut: { try? AuthService.shared.signOut() }
-                )
+            case .verified:
+                if let user = currentUser {
+                    MainTabView(
+                        user: user,
+                        userRepo: userRepo,
+                        rideRepo: rideRepo,
+                        bookingService: bookingService,
+                        chatService: chatService,
+                        ratingService: ratingService,
+                        authService: AuthService.shared,
+                        onSignOut: signOut
+                    )
+                }
             }
         }
         .task { await observeAuth() }
@@ -99,10 +115,19 @@ struct RootView: View {
                 isLoadingUser = true
                 currentUser = try? await userRepo.fetch(id: uid)
                 isLoadingUser = false
+                PushNotificationManager.shared.attach(userId: uid)
+                await PushNotificationManager.shared.requestAuthorization()
             } else {
                 currentUser = nil
                 isLoadingUser = false
             }
+        }
+    }
+
+    private func signOut() {
+        Task {
+            await PushNotificationManager.shared.detach()
+            try? AuthService.shared.signOut()
         }
     }
 

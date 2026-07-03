@@ -1,5 +1,6 @@
 import SwiftUI
 import FirebaseCore
+import FirebaseMessaging
 import GoogleSignIn
 
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -17,6 +18,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                      open url: URL,
                      options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         return GIDSignIn.sharedInstance.handle(url)
+    }
+
+    func application(_ application: UIApplication,
+                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Messaging.messaging().apnsToken = deviceToken
     }
 }
 

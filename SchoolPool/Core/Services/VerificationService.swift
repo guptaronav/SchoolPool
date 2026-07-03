@@ -21,7 +21,7 @@ final class VerificationService: VerificationServiceProtocol {
         req.documentStoragePaths = paths
 
         let docRef = db.collection("verificationRequests").document()
-        try await docRef.setData(from: req)
+        try docRef.setData(from: req)
 
         try await db.collection("users").document(req.userId).updateData([
             "verificationStatus": VerificationStatus.pending.rawValue

@@ -428,6 +428,10 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = SchoolPool;
+				INFOPLIST_KEY_NSCameraUsageDescription = "SchoolPool uses the camera so you can photograph your student ID or verification documents.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "SchoolPool needs access to your photos so you can upload verification documents.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "SchoolPool uses your location to set ride pickup and drop-off points and to show nearby rides.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -458,6 +462,10 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = SchoolPool;
+				INFOPLIST_KEY_NSCameraUsageDescription = "SchoolPool uses the camera so you can photograph your student ID or verification documents.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "SchoolPool needs access to your photos so you can upload verification documents.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "SchoolPool uses your location to set ride pickup and drop-off points and to show nearby rides.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

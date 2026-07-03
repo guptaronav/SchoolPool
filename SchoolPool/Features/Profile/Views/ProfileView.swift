@@ -5,8 +5,15 @@ struct ProfileView: View {
     @State private var showEdit = false
     let onSignOut: () -> Void
 
-    init(userId: String, userRepo: UserRepositoryProtocol, onSignOut: @escaping () -> Void) {
+    private let userId: String
+    private let userRepo: UserRepositoryProtocol
+    private let authService: AuthServiceProtocol
+
+    init(userId: String, userRepo: UserRepositoryProtocol, authService: AuthServiceProtocol, onSignOut: @escaping () -> Void) {
         _vm = StateObject(wrappedValue: ProfileViewModel(userId: userId, userRepo: userRepo))
+        self.userId = userId
+        self.userRepo = userRepo
+        self.authService = authService
         self.onSignOut = onSignOut
     }
 
@@ -56,6 +63,22 @@ struct ProfileView: View {
                         }
 
                         Spacer(minLength: 32)
+
+                        NavigationLink {
+                            SettingsView(userId: userId, userRepo: userRepo, authService: authService, onSignOut: onSignOut)
+                        } label: {
+                            HStack {
+                                Image(systemName: "gearshape.fill")
+                                Text("Settings").fontWeight(.semibold)
+                                Spacer()
+                                Image(systemName: "chevron.right").font(.caption)
+                            }
+                            .padding(16)
+                            .background(Color.spSurface)
+                            .foregroundStyle(Color.spTextPrimary)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                        }
+                        .padding(.horizontal, 24)
 
                         SPButton(title: "Sign Out", style: .danger) { onSignOut() }
                             .padding(.horizontal, 24)

@@ -47,7 +47,14 @@ enum PoolLevel: String, Codable, CaseIterable, Sendable {
 }
 
 enum RideStatus: String, Codable, CaseIterable, Sendable {
-    case open, full, completed, cancelled
+    case open, full, inProgress, completed, cancelled
+
+    /// The ride has not started yet and can still change composition.
+    var isScheduled: Bool { self == .open || self == .full }
+
+    var isActive: Bool { self == .inProgress }
+
+    var isFinished: Bool { self == .completed || self == .cancelled }
 }
 
 enum DayOfWeek: String, Codable, CaseIterable, Sendable {

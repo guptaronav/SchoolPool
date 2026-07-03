@@ -20,6 +20,8 @@ final class MockAuthService: AuthServiceProtocol {
     private(set) var signOutCallCount = 0
     private(set) var sendEmailVerificationCallCount = 0
     private(set) var reloadCurrentUserCallCount = 0
+    private(set) var deleteAccountCallCount = 0
+    var shouldThrowOnDelete = false
 
     func signInWithGoogle() async throws -> String {
         signInWithGoogleCallCount += 1
@@ -55,7 +57,11 @@ final class MockAuthService: AuthServiceProtocol {
         subject.send(nil)
     }
 
-    func deleteAccount() async throws {}
+    func deleteAccount() async throws {
+        deleteAccountCallCount += 1
+        if shouldThrowOnDelete { throw MockError.intentional }
+        subject.send(nil)
+    }
 }
 
 enum MockError: Error {

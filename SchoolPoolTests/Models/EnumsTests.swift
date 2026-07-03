@@ -34,8 +34,8 @@ final class EnumsTests: XCTestCase {
     }
 
     func test_rideStatus_allCases() {
-        XCTAssertEqual(RideStatus.allCases.count, 4)
-        let statuses: [RideStatus] = [.open, .full, .completed, .cancelled]
+        XCTAssertEqual(RideStatus.allCases.count, 5)
+        let statuses: [RideStatus] = [.open, .full, .inProgress, .completed, .cancelled]
         XCTAssertEqual(RideStatus.allCases.sorted(by: { $0.rawValue < $1.rawValue }), statuses.sorted(by: { $0.rawValue < $1.rawValue }))
     }
 
