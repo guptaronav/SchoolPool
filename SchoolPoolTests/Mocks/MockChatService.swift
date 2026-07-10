@@ -19,13 +19,14 @@ final class MockChatService: ChatServiceProtocol {
         subject.send(messagesStore[message.rideId] ?? [])
     }
 
-    func fetchMessages(rideId: String) async throws -> [ChatMessage] {
-        if let sendError { throw sendError }
-        return messagesStore[rideId] ?? []
-    }
-
     func observeMessages(rideId: String) -> AnyPublisher<[ChatMessage], Never> {
         subject.send(messagesStore[rideId] ?? [])
         return subject.eraseToAnyPublisher()
+    }
+
+    private(set) var stopObservingCallCount = 0
+
+    func stopObserving(rideId: String) {
+        stopObservingCallCount += 1
     }
 }

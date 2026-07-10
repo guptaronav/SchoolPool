@@ -71,8 +71,7 @@ private struct ReviewDetailSheet: View {
                 Section {
                     SPButton(title: "Approve") {
                         Task {
-                            guard let id = request.id else { return }
-                            await vm.approve(requestId: id, note: note.isEmpty ? nil : note)
+                            await vm.approve(request, note: note.isEmpty ? nil : note)
                             dismiss()
                         }
                     }
@@ -86,8 +85,7 @@ private struct ReviewDetailSheet: View {
             .alert("Reject Request", isPresented: $showRejectAlert) {
                 Button("Reject", role: .destructive) {
                     Task {
-                        guard let id = request.id else { return }
-                        await vm.reject(requestId: id, reason: note.isEmpty ? "Rejected by admin" : note)
+                        await vm.reject(request, reason: note.isEmpty ? "Rejected by admin" : note)
                         dismiss()
                     }
                 }

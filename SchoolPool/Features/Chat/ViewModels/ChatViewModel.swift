@@ -36,6 +36,13 @@ final class ChatViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    /// Tears down the Firestore listener; without this it outlives the view
+    /// for the whole app session.
+    func stop() {
+        cancellables.removeAll()
+        chatService.stopObserving(rideId: rideId)
+    }
+
     func send() async {
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }

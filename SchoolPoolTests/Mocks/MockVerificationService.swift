@@ -21,23 +21,19 @@ final class MockVerificationService: VerificationServiceProtocol {
         pendingRequests.filter { $0.schoolId == forSchoolId && $0.status == .pending }
     }
 
-    func approve(requestId: String, adminNote: String?) async throws {
+    func approve(request: VerificationRequest, adminNote: String?) async throws {
         approveCallCount += 1
         if let approveError { throw approveError }
-        if let idx = pendingRequests.firstIndex(where: { $0.id == requestId }) {
+        if let idx = pendingRequests.firstIndex(where: { $0.id == request.id }) {
             pendingRequests[idx].status = .approved
         }
     }
 
-    func reject(requestId: String, reason: String) async throws {
+    func reject(request: VerificationRequest, reason: String) async throws {
         rejectCallCount += 1
         if let rejectError { throw rejectError }
-        if let idx = pendingRequests.firstIndex(where: { $0.id == requestId }) {
+        if let idx = pendingRequests.firstIndex(where: { $0.id == request.id }) {
             pendingRequests[idx].status = .rejected
         }
-    }
-
-    func fetchLatestRequest(forUserId: String) async throws -> VerificationRequest? {
-        pendingRequests.filter { $0.userId == forUserId }.last
     }
 }

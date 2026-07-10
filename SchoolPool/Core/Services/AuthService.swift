@@ -97,7 +97,6 @@ final class AuthService: NSObject, AuthServiceProtocol {
 
 enum AuthError: Error {
     case notSignedIn
-    case missingClientID
     case missingIDToken
     case noRootViewController
 }

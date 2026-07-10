@@ -77,8 +77,9 @@ final class RideDetailViewModel: ObservableObject {
     }
 
     /// Keeps `ride` in sync with live Firestore updates (status changes, seat counts).
-    private func startObserving() {
-        guard cancellables.isEmpty else { return }
+    /// Idempotent; safe to call from `onAppear` when the view re-enters.
+    func startObserving() {
+        guard cancellables.isEmpty, ride != nil else { return }
         rideRepo.observeRide(id: rideId)
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
@@ -88,8 +89,15 @@ final class RideDetailViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    /// Tears down the Firestore listener; without this it outlives the view
+    /// for the whole app session.
+    func stopObserving() {
+        cancellables.removeAll()
+        rideRepo.stopObserving(id: rideId)
+    }
+
     func requestSeat() async {
-        guard let ride, canRequestSeat else {
+        guard !isWorking, let ride, canRequestSeat else {
             if ride?.isFull == true { errorMessage = BookingError.rideFull.localizedDescription }
             return
         }
@@ -105,7 +113,7 @@ final class RideDetailViewModel: ObservableObject {
     }
 
     func cancelRequest() async {
-        guard let requestId = myRequest?.id else { return }
+        guard !isWorking, let requestId = myRequest?.id else { return }
         isWorking = true
         defer { isWorking = false }
         do {
@@ -117,6 +125,7 @@ final class RideDetailViewModel: ObservableObject {
     }
 
     func accept(_ request: RideRequest) async {
+        guard !isWorking else { return }
         isWorking = true
         defer { isWorking = false }
         do {
@@ -128,6 +137,7 @@ final class RideDetailViewModel: ObservableObject {
     }
 
     func decline(_ request: RideRequest) async {
+        guard !isWorking else { return }
         isWorking = true
         defer { isWorking = false }
         do {
@@ -162,7 +172,7 @@ final class RideDetailViewModel: ObservableObject {
     }
 
     private func transition(to status: RideStatus, allowedFrom: (RideStatus) -> Bool) async {
-        guard isDriver, var current = ride, allowedFrom(current.status) else { return }
+        guard !isWorking, isDriver, var current = ride, allowedFrom(current.status) else { return }
         isWorking = true
         defer { isWorking = false }
         current.status = status

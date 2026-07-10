@@ -37,19 +37,4 @@ final class RatingService: RatingServiceProtocol {
             .getDocuments()
         return !snap.documents.isEmpty
     }
-
-    func fetchRatings(forUser rateeId: String) async throws -> [Rating] {
-        let snap = try await ratings
-            .whereField("rateeId", isEqualTo: rateeId)
-            .order(by: "createdAt", descending: true)
-            .getDocuments()
-        return snap.documents.compactMap { try? $0.data(as: Rating.self) }
-    }
-
-    func averageStars(forUser rateeId: String) async throws -> Double? {
-        let all = try await fetchRatings(forUser: rateeId)
-        guard !all.isEmpty else { return nil }
-        let total = all.reduce(0) { $0 + $1.stars }
-        return Double(total) / Double(all.count)
-    }
 }

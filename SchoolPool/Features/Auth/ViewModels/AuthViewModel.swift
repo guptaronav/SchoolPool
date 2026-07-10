@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+@preconcurrency import FirebaseFirestore
 
 @MainActor
 final class AuthViewModel: ObservableObject {
@@ -24,7 +25,7 @@ final class AuthViewModel: ObservableObject {
         state = .loading
         do {
             let uid = try await auth.signInWithGoogle()
-            await ensureUserDoc(uid: uid)
+            try await ensureUserDoc(uid: uid)
             state = .signedIn(uid: uid)
         } catch {
             state = .error(error.localizedDescription)
@@ -45,7 +46,7 @@ final class AuthViewModel: ObservableObject {
         state = .loading
         do {
             let uid = try await auth.signUp(email: email, password: password, displayName: displayName)
-            await ensureUserDoc(uid: uid, email: email, displayName: displayName)
+            try await ensureUserDoc(uid: uid, email: email, displayName: displayName)
             state = .signedIn(uid: uid)
         } catch {
             state = .error(error.localizedDescription)
@@ -61,15 +62,32 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
-    private func ensureUserDoc(uid: String, email: String = "", displayName: String = "") async {
-        if (try? await userRepo.fetch(id: uid)) != nil { return }
-        var newUser = SPUser.stub(
+    /// Creates the user doc only when it's confirmed absent. A thrown fetch
+    /// (network blip, permission hiccup) must propagate — treating it as
+    /// "missing" would overwrite an existing profile with a blank one.
+    private func ensureUserDoc(uid: String, email: String = "", displayName: String = "") async throws {
+        if try await userRepo.fetch(id: uid) != nil { return }
+        var newUser = SPUser(
             displayName: displayName.isEmpty ? "New User" : displayName,
             email: email,
+            photoURL: nil,
             role: .student,
-            verificationStatus: .unverified
+            verificationStatus: .unverified,
+            schoolId: nil,
+            linkedGuardianIds: [],
+            linkedStudentIds: [],
+            emergencyContactName: nil,
+            emergencyContactPhone: nil,
+            dropletsBalance: 0,
+            poolLevel: .ripple,
+            rideStreak: 0,
+            createdAt: Timestamp(),
+            lastActiveAt: Timestamp(),
+            isEmailVerified: false,
+            notificationTokens: [],
+            privacySettings: PrivacySettings()
         )
         newUser.id = uid
-        try? await userRepo.create(newUser)
+        try await userRepo.create(newUser)
     }
 }

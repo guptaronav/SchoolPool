@@ -59,4 +59,10 @@ final class MockRideRepository: RideRepositoryProtocol {
     func observeRide(id: String) -> AnyPublisher<Ride?, Never> {
         subject.eraseToAnyPublisher()
     }
+
+    private(set) var stopObservingCallCount = 0
+
+    func stopObserving(id: String) {
+        stopObservingCallCount += 1
+    }
 }

@@ -56,6 +56,8 @@ struct RideDetailView: View {
             }
         }
         .task { await vm.load() }
+        .onAppear { vm.startObserving() }
+        .onDisappear { vm.stopObserving() }
     }
 
     private func content(for ride: Ride) -> some View {
@@ -108,33 +110,41 @@ struct RideDetailView: View {
 
     @ViewBuilder
     private func riderActionSection(for ride: Ride) -> some View {
-        switch vm.myRequest?.status {
-        case .pending:
+        if ride.status == .cancelled {
             statusBanner(
-                icon: "clock.fill", tint: .spDroplet,
-                title: "Request sent",
-                subtitle: "Waiting for \(ride.driverName) to respond."
+                icon: "xmark.circle.fill", tint: .spDanger,
+                title: "Ride cancelled",
+                subtitle: "\(ride.driverName) cancelled this ride."
             )
-            SPButton(title: "Cancel Request", style: .secondary, isLoading: vm.isWorking) {
-                Task { await vm.cancelRequest() }
-            }
-        case .accepted:
-            statusBanner(
-                icon: "checkmark.seal.fill", tint: .spAccent,
-                title: "You're in!",
-                subtitle: "Your seat on this ride is confirmed."
-            )
-        default:
-            if vm.canRequestSeat {
-                SPButton(title: "Request a Seat", isLoading: vm.isWorking) {
-                    Task { await vm.requestSeat() }
-                }
-            } else if ride.isFull {
+        } else {
+            switch vm.myRequest?.status {
+            case .pending:
                 statusBanner(
-                    icon: "person.3.fill", tint: .spTextSecondary,
-                    title: "Ride full",
-                    subtitle: "All seats on this ride are taken."
+                    icon: "clock.fill", tint: .spDroplet,
+                    title: "Request sent",
+                    subtitle: "Waiting for \(ride.driverName) to respond."
                 )
+                SPButton(title: "Cancel Request", style: .secondary, isLoading: vm.isWorking) {
+                    Task { await vm.cancelRequest() }
+                }
+            case .accepted:
+                statusBanner(
+                    icon: "checkmark.seal.fill", tint: .spAccent,
+                    title: "You're in!",
+                    subtitle: "Your seat on this ride is confirmed."
+                )
+            default:
+                if vm.canRequestSeat {
+                    SPButton(title: "Request a Seat", isLoading: vm.isWorking) {
+                        Task { await vm.requestSeat() }
+                    }
+                } else if ride.isFull {
+                    statusBanner(
+                        icon: "person.3.fill", tint: .spTextSecondary,
+                        title: "Ride full",
+                        subtitle: "All seats on this ride are taken."
+                    )
+                }
             }
         }
     }

@@ -21,8 +21,16 @@ final class OnboardingViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     var schoolSearchText: String = "" {
-        didSet { Task { await searchSchools(query: schoolSearchText) } }
+        didSet {
+            // Cancel the in-flight search so a slow, broader query can't
+            // overwrite the results of the newer, narrower one.
+            searchTask?.cancel()
+            let query = schoolSearchText
+            searchTask = Task { await searchSchools(query: query) }
+        }
     }
+
+    private var searchTask: Task<Void, Never>?
 
     private let auth: AuthServiceProtocol
     private let userRepo: UserRepositoryProtocol
@@ -126,9 +134,11 @@ final class OnboardingViewModel: ObservableObject {
     private func searchSchools(query: String) async {
         guard query.count >= 2 else { schools = []; return }
         do {
-            schools = try await schoolRepo.search(query: query, limit: 20)
+            let results = try await schoolRepo.search(query: query, limit: 20)
+            guard !Task.isCancelled else { return }
+            schools = results
         } catch {
-            schools = []
+            if !Task.isCancelled { schools = [] }
         }
     }
 }

@@ -24,19 +24,19 @@ final class AdminViewModel: ObservableObject {
         }
     }
 
-    func approve(requestId: String, note: String?) async {
+    func approve(_ request: VerificationRequest, note: String?) async {
         do {
-            try await verificationService.approve(requestId: requestId, adminNote: note)
-            pendingRequests.removeAll { $0.id == requestId }
+            try await verificationService.approve(request: request, adminNote: note)
+            pendingRequests.removeAll { $0.id == request.id }
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
-    func reject(requestId: String, reason: String) async {
+    func reject(_ request: VerificationRequest, reason: String) async {
         do {
-            try await verificationService.reject(requestId: requestId, reason: reason)
-            pendingRequests.removeAll { $0.id == requestId }
+            try await verificationService.reject(request: request, reason: reason)
+            pendingRequests.removeAll { $0.id == request.id }
         } catch {
             errorMessage = error.localizedDescription
         }

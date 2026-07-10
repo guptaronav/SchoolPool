@@ -9,4 +9,5 @@ protocol RideRepositoryProtocol {
     func fetchRides(driverId: String) async throws -> [Ride]
     func fetchRides(passengerId: String) async throws -> [Ride]
     func observeRide(id: String) -> AnyPublisher<Ride?, Never>
+    func stopObserving(id: String)
 }

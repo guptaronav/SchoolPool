@@ -27,7 +27,7 @@ final class AdminViewModelTests: XCTestCase {
 
         let vm = makeVM(service: service)
         await vm.loadPending()
-        await vm.approve(requestId: "req_001", note: "Looks good")
+        await vm.approve(req, note: "Looks good")
 
         XCTAssertTrue(vm.pendingRequests.isEmpty)
     }
@@ -40,7 +40,7 @@ final class AdminViewModelTests: XCTestCase {
 
         let vm = makeVM(service: service)
         await vm.loadPending()
-        await vm.reject(requestId: "req_002", reason: "Invalid document")
+        await vm.reject(req, reason: "Invalid document")
 
         XCTAssertTrue(vm.pendingRequests.isEmpty)
     }

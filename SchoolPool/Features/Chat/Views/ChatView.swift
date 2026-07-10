@@ -22,6 +22,7 @@ struct ChatView: View {
         .navigationTitle("Ride Chat")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { vm.start() }
+        .onDisappear { vm.stop() }
     }
 
     private var messageScroll: some View {

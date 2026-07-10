@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 @testable import SchoolPool
 
 final class MockUserRepository: UserRepositoryProtocol {
@@ -10,8 +9,6 @@ final class MockUserRepository: UserRepositoryProtocol {
 
     private(set) var createCallCount = 0
     private(set) var updateCallCount = 0
-
-    private let subject = PassthroughSubject<SPUser?, Never>()
 
     func create(_ user: SPUser) async throws {
         createCallCount += 1
@@ -30,14 +27,6 @@ final class MockUserRepository: UserRepositoryProtocol {
         if let updateError { throw updateError }
         guard let id = user.id else { return }
         users[id] = user
-        subject.send(user)
-    }
-
-    func updateVerificationStatus(_ status: VerificationStatus, for userId: String) async throws {
-        guard var u = users[userId] else { return }
-        u.verificationStatus = status
-        users[userId] = u
-        subject.send(u)
     }
 
     func addNotificationToken(_ token: String, for userId: String) async throws {
@@ -50,9 +39,5 @@ final class MockUserRepository: UserRepositoryProtocol {
         guard var u = users[userId] else { return }
         u.notificationTokens.removeAll { $0 == token }
         users[userId] = u
-    }
-
-    func observeUser(id: String) -> AnyPublisher<SPUser?, Never> {
-        subject.eraseToAnyPublisher()
     }
 }

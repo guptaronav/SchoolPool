@@ -29,7 +29,8 @@ final class CreateRideViewModel: ObservableObject {
     }
 
     var canSubmit: Bool {
-        origin != nil
+        !isSubmitting
+            && origin != nil
             && destination != nil
             && departureDate > Date()
             && Self.seatRange.contains(seats)

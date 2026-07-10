@@ -60,5 +60,9 @@ final class RideRepository: RideRepositoryProtocol {
         return subject.eraseToAnyPublisher()
     }
 
+    func stopObserving(id: String) {
+        listeners.removeValue(forKey: id)?.remove()
+    }
+
     deinit { listeners.values.forEach { $0.remove() } }
 }

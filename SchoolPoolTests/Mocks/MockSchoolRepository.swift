@@ -19,8 +19,4 @@ final class MockSchoolRepository: SchoolRepositoryProtocol {
         if let fetchError { throw fetchError }
         return schools.first { $0.id == id }
     }
-
-    func findByEmailDomain(_ domain: String) async throws -> School? {
-        schools.first { $0.matches(emailDomain: domain) }
-    }
 }

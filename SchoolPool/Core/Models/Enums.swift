@@ -12,12 +12,6 @@ enum UserRole: String, Codable, CaseIterable, Sendable {
         }
     }
 
-    var isSelectableDuringOnboarding: Bool {
-        switch self {
-        case .student, .parent, .teacher, .community: return true
-        case .schoolAdmin, .superAdmin: return false
-        }
-    }
 }
 
 enum VerificationStatus: String, Codable, Sendable {
@@ -55,20 +49,4 @@ enum RideStatus: String, Codable, CaseIterable, Sendable {
     var isActive: Bool { self == .inProgress }
 
     var isFinished: Bool { self == .completed || self == .cancelled }
-}
-
-enum DayOfWeek: String, Codable, CaseIterable, Sendable {
-    case monday, tuesday, wednesday, thursday, friday, saturday, sunday
-
-    var shortName: String {
-        switch self {
-        case .monday: return "M"
-        case .tuesday: return "Tu"
-        case .wednesday: return "W"
-        case .thursday: return "Th"
-        case .friday: return "F"
-        case .saturday: return "Sa"
-        case .sunday: return "Su"
-        }
-    }
 }

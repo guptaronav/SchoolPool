@@ -73,6 +73,7 @@ struct RootView: View {
                         bookingService: bookingService,
                         chatService: chatService,
                         ratingService: ratingService,
+                        verificationService: verificationService,
                         authService: AuthService.shared,
                         onSignOut: signOut
                     )

@@ -23,19 +23,11 @@
 			remoteGlobalIDString = B5ED8D902FC2E28B00942410;
 			remoteInfo = SchoolPool;
 		};
-		B5ED8DAC2FC2E28E00942410 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B5ED8D892FC2E28B00942410 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B5ED8D902FC2E28B00942410;
-			remoteInfo = SchoolPool;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		B5ED8D912FC2E28B00942410 /* SchoolPool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SchoolPool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5ED8DA12FC2E28E00942410 /* SchoolPoolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SchoolPoolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5ED8DAB2FC2E28E00942410 /* SchoolPoolUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SchoolPoolUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -47,11 +39,6 @@
 		B5ED8DA42FC2E28E00942410 /* SchoolPoolTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = SchoolPoolTests;
-			sourceTree = "<group>";
-		};
-		B5ED8DAE2FC2E28E00942410 /* SchoolPoolUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SchoolPoolUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -77,13 +64,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B5ED8DA82FC2E28E00942410 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -92,7 +72,6 @@
 			children = (
 				B5ED8D932FC2E28B00942410 /* SchoolPool */,
 				B5ED8DA42FC2E28E00942410 /* SchoolPoolTests */,
-				B5ED8DAE2FC2E28E00942410 /* SchoolPoolUITests */,
 				B5ED8D922FC2E28B00942410 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -102,7 +81,6 @@
 			children = (
 				B5ED8D912FC2E28B00942410 /* SchoolPool.app */,
 				B5ED8DA12FC2E28E00942410 /* SchoolPoolTests.xctest */,
-				B5ED8DAB2FC2E28E00942410 /* SchoolPoolUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -161,29 +139,6 @@
 			productReference = B5ED8DA12FC2E28E00942410 /* SchoolPoolTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B5ED8DAA2FC2E28E00942410 /* SchoolPoolUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B5ED8DBB2FC2E28E00942410 /* Build configuration list for PBXNativeTarget "SchoolPoolUITests" */;
-			buildPhases = (
-				B5ED8DA72FC2E28E00942410 /* Sources */,
-				B5ED8DA82FC2E28E00942410 /* Frameworks */,
-				B5ED8DA92FC2E28E00942410 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B5ED8DAD2FC2E28E00942410 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				B5ED8DAE2FC2E28E00942410 /* SchoolPoolUITests */,
-			);
-			name = SchoolPoolUITests;
-			packageProductDependencies = (
-			);
-			productName = SchoolPoolUITests;
-			productReference = B5ED8DAB2FC2E28E00942410 /* SchoolPoolUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -198,10 +153,6 @@
 						CreatedOnToolsVersion = 16.2;
 					};
 					B5ED8DA02FC2E28E00942410 = {
-						CreatedOnToolsVersion = 16.2;
-						TestTargetID = B5ED8D902FC2E28B00942410;
-					};
-					B5ED8DAA2FC2E28E00942410 = {
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = B5ED8D902FC2E28B00942410;
 					};
@@ -227,7 +178,6 @@
 			targets = (
 				B5ED8D902FC2E28B00942410 /* SchoolPool */,
 				B5ED8DA02FC2E28E00942410 /* SchoolPoolTests */,
-				B5ED8DAA2FC2E28E00942410 /* SchoolPoolUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -241,13 +191,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B5ED8D9F2FC2E28E00942410 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B5ED8DA92FC2E28E00942410 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -271,13 +214,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B5ED8DA72FC2E28E00942410 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -285,11 +221,6 @@
 			isa = PBXTargetDependency;
 			target = B5ED8D902FC2E28B00942410 /* SchoolPool */;
 			targetProxy = B5ED8DA22FC2E28E00942410 /* PBXContainerItemProxy */;
-		};
-		B5ED8DAD2FC2E28E00942410 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B5ED8D902FC2E28B00942410 /* SchoolPool */;
-			targetProxy = B5ED8DAC2FC2E28E00942410 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -519,40 +450,6 @@
 			};
 			name = Release;
 		};
-		B5ED8DBC2FC2E28E00942410 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = LPU8C59HD4;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ronavgupta.SchoolPoolUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = SchoolPool;
-			};
-			name = Debug;
-		};
-		B5ED8DBD2FC2E28E00942410 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = LPU8C59HD4;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ronavgupta.SchoolPoolUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = SchoolPool;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -579,15 +476,6 @@
 			buildConfigurations = (
 				B5ED8DB92FC2E28E00942410 /* Debug */,
 				B5ED8DBA2FC2E28E00942410 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B5ED8DBB2FC2E28E00942410 /* Build configuration list for PBXNativeTarget "SchoolPoolUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B5ED8DBC2FC2E28E00942410 /* Debug */,
-				B5ED8DBD2FC2E28E00942410 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

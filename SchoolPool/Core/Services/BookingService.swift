@@ -4,12 +4,14 @@ import Foundation
 enum BookingError: LocalizedError {
     case rideFull
     case alreadyRequested
+    case alreadyProcessed
     case missingId
 
     var errorDescription: String? {
         switch self {
         case .rideFull: return "This ride is already full."
         case .alreadyRequested: return "You've already requested a seat on this ride."
+        case .alreadyProcessed: return "This request was already handled."
         case .missingId: return "This request can't be processed right now."
         }
     }
@@ -59,9 +61,21 @@ final class BookingService: BookingServiceProtocol {
 
         _ = try await db.runTransaction { transaction, errorPointer in
             do {
+                // Re-read the request inside the transaction: a double-tap, a retry,
+                // or a rider's concurrent cancel must not book a seat twice.
+                let requestSnap = try transaction.getDocument(requestRef)
+                guard let liveRequest = try? requestSnap.data(as: RideRequest.self),
+                      liveRequest.status == .pending else {
+                    errorPointer?.pointee = BookingError.alreadyProcessed as NSError
+                    return nil
+                }
                 let rideSnap = try transaction.getDocument(rideRef)
                 guard var ride = try? rideSnap.data(as: Ride.self), !ride.isFull else {
                     errorPointer?.pointee = BookingError.rideFull as NSError
+                    return nil
+                }
+                guard !ride.passengerIds.contains(request.riderId) else {
+                    errorPointer?.pointee = BookingError.alreadyProcessed as NSError
                     return nil
                 }
                 ride.seatsAvailable -= 1

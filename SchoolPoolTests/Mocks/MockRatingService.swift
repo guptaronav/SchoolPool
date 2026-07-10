@@ -23,14 +23,4 @@ final class MockRatingService: RatingServiceProtocol {
             $0.rideId == rideId && $0.raterId == raterId && $0.rateeId == rateeId
         }
     }
-
-    func fetchRatings(forUser rateeId: String) async throws -> [Rating] {
-        ratings.filter { $0.rateeId == rateeId }
-    }
-
-    func averageStars(forUser rateeId: String) async throws -> Double? {
-        let all = ratings.filter { $0.rateeId == rateeId }
-        guard !all.isEmpty else { return nil }
-        return Double(all.reduce(0) { $0 + $1.stars }) / Double(all.count)
-    }
 }

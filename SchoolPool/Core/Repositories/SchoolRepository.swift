@@ -19,12 +19,4 @@ final class SchoolRepository: SchoolRepositoryProtocol {
         let snap = try await db.collection("schools").document(id).getDocument()
         return try? snap.data(as: School.self)
     }
-
-    func findByEmailDomain(_ domain: String) async throws -> School? {
-        let snap = try await db.collection("schools")
-            .whereField("emailDomains", arrayContains: domain.lowercased())
-            .limit(to: 1)
-            .getDocuments()
-        return snap.documents.first.flatMap { try? $0.data(as: School.self) }
-    }
 }

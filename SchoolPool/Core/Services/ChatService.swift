@@ -14,13 +14,6 @@ final class ChatService: ChatServiceProtocol {
         try messages(for: message.rideId).document().setData(from: message)
     }
 
-    func fetchMessages(rideId: String) async throws -> [ChatMessage] {
-        let snap = try await messages(for: rideId)
-            .order(by: "sentAt", descending: false)
-            .getDocuments()
-        return snap.documents.compactMap { try? $0.data(as: ChatMessage.self) }
-    }
-
     func observeMessages(rideId: String) -> AnyPublisher<[ChatMessage], Never> {
         let subject = CurrentValueSubject<[ChatMessage], Never>([])
         listeners[rideId]?.remove()
@@ -31,6 +24,10 @@ final class ChatService: ChatServiceProtocol {
                 subject.send(items)
             }
         return subject.eraseToAnyPublisher()
+    }
+
+    func stopObserving(rideId: String) {
+        listeners.removeValue(forKey: rideId)?.remove()
     }
 
     deinit { listeners.values.forEach { $0.remove() } }
