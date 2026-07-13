@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run tests
+        run: |
+          xcodebuild test \
+            -scheme SchoolPool \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -only-testing:SchoolPoolTests
+
+      # Simulator builds are unsigned by design — no Apple Developer account
+      # or signing certificate needed to produce or run one.
+      - name: Build unsigned Simulator app
+        run: |
+          xcodebuild build \
+            -scheme SchoolPool \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Zip app bundle
+        run: |
+          cd build/Build/Products/Debug-iphonesimulator
+          zip -r SchoolPool-Simulator.zip SchoolPool.app
+
+      - name: Attach to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/Build/Products/Debug-iphonesimulator/SchoolPool-Simulator.zip
+          generate_release_notes: true
