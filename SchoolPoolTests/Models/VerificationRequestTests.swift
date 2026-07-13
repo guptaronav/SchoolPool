@@ -12,9 +12,8 @@ final class VerificationRequestTests: XCTestCase {
         XCTAssertEqual(req.status, .approved)
     }
 
-    func test_stub_hasDocumentPaths() {
-        let req = VerificationRequest.stub(userId: "u42")
-        XCTAssertFalse(req.documentStoragePaths.isEmpty)
-        XCTAssertTrue(req.documentStoragePaths[0].contains("u42"))
+    func test_stub_hasDocumentImages() {
+        let req = VerificationRequest.stub()
+        XCTAssertFalse(req.documentImages.isEmpty)
     }
 }

@@ -64,6 +64,23 @@ private struct ReviewDetailSheet: View {
                         LabeledContent("School", value: school)
                     }
                 }
+                if !request.documentImages.isEmpty {
+                    Section("Documents") {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(request.documentImages.indices, id: \.self) { i in
+                                    if let uiImg = UIImage(data: request.documentImages[i]) {
+                                        Image(uiImage: uiImg)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 160)
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 Section("Note (optional)") {
                     TextField("Admin note", text: $note, axis: .vertical)
                         .lineLimit(3...6)

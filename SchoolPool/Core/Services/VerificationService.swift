@@ -1,36 +1,36 @@
 import Foundation
 @preconcurrency import FirebaseFirestore
-@preconcurrency import FirebaseStorage
 
 enum VerificationError: LocalizedError {
     case missingId
     case missingSchool
+    case documentsTooLarge
 
     var errorDescription: String? {
         switch self {
         case .missingId: return "This request can't be processed right now."
         case .missingSchool: return "This request isn't linked to a school."
+        case .documentsTooLarge: return "Those photos are too large. Try fewer photos or lower resolution."
         }
     }
 }
 
 final class VerificationService: VerificationServiceProtocol {
+    /// Firestore caps documents at 1 MiB; leave headroom for the rest of the fields.
+    static let maxDocumentBytes = 900_000
+
     private let db = Firestore.firestore()
-    private let storage = Storage.storage().reference()
 
     func submit(request: VerificationRequest, documents: [Data]) async throws {
         var req = request
 
-        var paths: [String] = []
-        for (i, data) in documents.enumerated() {
-            let path = "verifications/\(req.userId)/\(UUID().uuidString)-\(i).jpg"
-            let ref = storage.child(path)
-            let metadata = StorageMetadata()
-            metadata.contentType = "image/jpeg"
-            _ = try await ref.putDataAsync(data, metadata: metadata)
-            paths.append(path)
+        guard documents.reduce(0, { $0 + $1.count }) <= Self.maxDocumentBytes else {
+            throw VerificationError.documentsTooLarge
         }
-        req.documentStoragePaths = paths
+        // Stored as bytes directly on the request doc (no Storage bucket needed —
+        // this runs on Firebase's free Spark plan). Callers are expected to
+        // downscale/compress images before calling submit().
+        req.documentImages = documents
 
         // Claim the school on the user doc first: the request-create rule checks
         // the claimed school matches, and storage admin reads key off it.

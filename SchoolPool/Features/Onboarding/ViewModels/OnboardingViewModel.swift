@@ -94,7 +94,7 @@ final class OnboardingViewModel: ObservableObject {
             schoolId: selectedSchool?.id,
             schoolNameFreeText: selectedSchool?.name,
             studentIdNumberHash: Crypto.sha256(studentIdHash),
-            documentStoragePaths: [],
+            documentImages: [],
             status: .pending,
             reviewedByAdminId: nil,
             reviewNote: nil,

@@ -84,9 +84,27 @@ final class RideDetailViewModel: ObservableObject {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] updated in
-                self?.ride = updated
+                guard let self else { return }
+                if let previousStatus = self.ride?.status, previousStatus != updated.status {
+                    self.notifyStatusChange(to: updated.status)
+                }
+                self.ride = updated
             }
             .store(in: &cancellables)
+    }
+
+    /// Local notification for a status change — the no-Blaze substitute for a
+    /// server-triggered push (Cloud Functions can't deploy without Blaze).
+    private func notifyStatusChange(to status: RideStatus) {
+        guard isPassenger || isDriver else { return }
+        let body: String
+        switch status {
+        case .inProgress: body = "Your ride is starting now."
+        case .completed: body = "Your ride is complete."
+        case .cancelled: body = "This ride was cancelled."
+        case .open, .full: return
+        }
+        PushNotificationManager.shared.notifyLocally(title: "SchoolPool", body: body)
     }
 
     /// Tears down the Firestore listener; without this it outlives the view

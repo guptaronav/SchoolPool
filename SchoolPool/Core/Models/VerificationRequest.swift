@@ -6,7 +6,7 @@ struct VerificationRequest: Codable, Identifiable, Sendable {
     var schoolId: String?
     var schoolNameFreeText: String?
     var studentIdNumberHash: String
-    var documentStoragePaths: [String]
+    var documentImages: [Data]
     var status: VerificationRequestStatus
     var reviewedByAdminId: String?
     var reviewNote: String?
@@ -26,7 +26,7 @@ extension VerificationRequest {
             schoolId: schoolId,
             schoolNameFreeText: nil,
             studentIdNumberHash: "abc123hash",
-            documentStoragePaths: ["/verifications/\(userId)/doc1.jpg"],
+            documentImages: [Data([0xFF, 0xD8, 0xFF])],
             status: status,
             reviewedByAdminId: nil,
             reviewNote: nil,

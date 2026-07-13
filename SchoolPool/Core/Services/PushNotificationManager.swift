@@ -50,6 +50,21 @@ final class PushNotificationManager: NSObject {
     private func persist(token: String, for userId: String) {
         Task { try? await userRepo?.addNotificationToken(token, for: userId) }
     }
+
+    /// Fires a local notification for a live-listener event (ride status, chat).
+    ///
+    /// No server component required — this is the notification path that works
+    /// without Cloud Functions/Blaze. Only fires while the app isn't the active
+    /// foreground app, since foreground events already update the UI directly.
+    func notifyLocally(title: String, body: String) {
+        guard UIApplication.shared.applicationState != .active else { return }
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request)
+    }
 }
 
 extension PushNotificationManager: MessagingDelegate {

@@ -85,11 +85,23 @@ struct DocumentUploadView: View {
             Task {
                 selectedImages = []
                 for item in newItems {
-                    if let data = try? await item.loadTransferable(type: Data.self) {
-                        selectedImages.append(data)
+                    if let data = try? await item.loadTransferable(type: Data.self),
+                       let compressed = Self.compress(data) {
+                        selectedImages.append(compressed)
                     }
                 }
             }
         }
+    }
+
+    /// Downscales + JPEG-compresses so documents fit in a Firestore document
+    /// (no Storage bucket needed — documents are stored inline).
+    private static func compress(_ data: Data, maxDimension: CGFloat = 1024, quality: CGFloat = 0.5) -> Data? {
+        guard let image = UIImage(data: data) else { return nil }
+        let scale = min(1, maxDimension / max(image.size.width, image.size.height))
+        let newSize = CGSize(width: image.size.width * scale, height: image.size.height * scale)
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        let resized = renderer.image { _ in image.draw(in: CGRect(origin: .zero, size: newSize)) }
+        return resized.jpegData(compressionQuality: quality)
     }
 }

@@ -14,6 +14,7 @@ final class ChatViewModel: ObservableObject {
     private let currentUserName: String
     private let chatService: ChatServiceProtocol
     private var cancellables = Set<AnyCancellable>()
+    private var hasLoadedInitialMessages = false
 
     init(rideId: String, currentUserId: String, currentUserName: String, chatService: ChatServiceProtocol) {
         self.rideId = rideId
@@ -31,7 +32,13 @@ final class ChatViewModel: ObservableObject {
         chatService.observeMessages(rideId: rideId)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] items in
-                self?.messages = items
+                guard let self else { return }
+                if self.hasLoadedInitialMessages,
+                   let newest = items.last, newest.id != self.messages.last?.id, newest.senderId != self.currentUserId {
+                    PushNotificationManager.shared.notifyLocally(title: newest.senderName, body: newest.text)
+                }
+                self.hasLoadedInitialMessages = true
+                self.messages = items
             }
             .store(in: &cancellables)
     }
@@ -41,6 +48,7 @@ final class ChatViewModel: ObservableObject {
     func stop() {
         cancellables.removeAll()
         chatService.stopObserving(rideId: rideId)
+        hasLoadedInitialMessages = false
     }
 
     func send() async {
