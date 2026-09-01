@@ -57,6 +57,11 @@ final class AuthService: NSObject, AuthServiceProtocol {
         return authResult.user.uid
     }
 
+    func signInAnonymously() async throws -> String {
+        let result = try await Auth.auth().signInAnonymously()
+        return result.user.uid
+    }
+
     // MARK: - Email / Password
 
     func signInWithEmail(_ email: String, password: String) async throws -> String {

@@ -32,6 +32,19 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
+    /// Debug-only mock login — no credentials, routes through the same
+    /// user-doc bootstrap as any other new sign-in.
+    func signInAnonymously() async {
+        state = .loading
+        do {
+            let uid = try await auth.signInAnonymously()
+            try await ensureUserDoc(uid: uid)
+            state = .signedIn(uid: uid)
+        } catch {
+            state = .error(error.localizedDescription)
+        }
+    }
+
     func signInWithEmail(_ email: String, password: String) async {
         state = .loading
         do {

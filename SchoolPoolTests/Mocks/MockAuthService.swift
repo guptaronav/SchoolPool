@@ -15,6 +15,7 @@ final class MockAuthService: AuthServiceProtocol {
     var isCurrentEmailVerified: Bool { isEmailVerified }
 
     private(set) var signInWithGoogleCallCount = 0
+    private(set) var signInAnonymouslyCallCount = 0
     private(set) var signInWithEmailCallCount = 0
     private(set) var signUpCallCount = 0
     private(set) var signOutCallCount = 0
@@ -25,6 +26,13 @@ final class MockAuthService: AuthServiceProtocol {
 
     func signInWithGoogle() async throws -> String {
         signInWithGoogleCallCount += 1
+        if shouldThrowOnSignIn { throw MockError.intentional }
+        subject.send(stubbedUid)
+        return stubbedUid
+    }
+
+    func signInAnonymously() async throws -> String {
+        signInAnonymouslyCallCount += 1
         if shouldThrowOnSignIn { throw MockError.intentional }
         subject.send(stubbedUid)
         return stubbedUid

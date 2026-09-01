@@ -6,6 +6,8 @@ protocol AuthServiceProtocol {
     var currentUserPublisher: AnyPublisher<String?, Never> { get }
 
     func signInWithGoogle() async throws -> String
+    /// No credentials required — used for the debug-only mock login path.
+    func signInAnonymously() async throws -> String
     func signInWithEmail(_ email: String, password: String) async throws -> String
     func signUp(email: String, password: String, displayName: String) async throws -> String
     func sendEmailVerification() async throws

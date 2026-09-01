@@ -42,6 +42,12 @@ struct WelcomeView: View {
                     SPButton(title: "Get Started") { showSignUp = true }
 
                     SPButton(title: "Sign In", style: .secondary) { showSignIn = true }
+
+                    #if DEBUG
+                    SPButton(title: "🧪 Mock Sign In (Debug)", style: .danger) {
+                        Task { await vm.signInAnonymously() }
+                    }
+                    #endif
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, 48)
