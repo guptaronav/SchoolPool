@@ -1,4 +1,4 @@
-<img width="407" height="141" alt="Screenshot 2026-09-05 at 5 03 52 PM" src="https://github.com/user-attachments/assets/3f45cce9-def5-49a6-b2c4-010e6fd2e616" />
+<img width="1000" height="300" alt="Screenshot 2026-09-05 at 5 03 52 PM" src="https://github.com/user-attachments/assets/3f45cce9-def5-49a6-b2c4-010e6fd2e616" />
 
 # SchoolPool
 
