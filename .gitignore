@@ -1,1 +1,11 @@
 .superpowers/
+
+# Xcode
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.build/
+
+# Node / web
+web/node_modules/
+web/dist/

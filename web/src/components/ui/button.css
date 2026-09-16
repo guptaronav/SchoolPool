@@ -1,0 +1,80 @@
+.sp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 52px;
+  padding: 0 var(--space-5);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out-expo), filter var(--duration-fast) ease;
+}
+
+.sp-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.sp-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sp-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.sp-button--primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.sp-button--primary:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.sp-button--secondary {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+}
+
+.sp-button--secondary:hover:not(:disabled) {
+  background: var(--color-background);
+}
+
+.sp-button--danger {
+  background: var(--color-danger);
+  color: white;
+}
+
+.sp-button--danger:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.sp-button--ghost {
+  background: transparent;
+  color: var(--color-primary);
+  min-height: auto;
+  padding: var(--space-2) var(--space-3);
+  width: auto;
+}
+
+.sp-button__spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: sp-spin 0.7s linear infinite;
+}
+
+@keyframes sp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
