@@ -1,5 +1,5 @@
 .onboarding-page {
-  min-height: 100dvh;
+  min-height: 100%;
   padding: var(--space-8) var(--space-5) var(--space-6);
   background: var(--color-background);
   display: flex;

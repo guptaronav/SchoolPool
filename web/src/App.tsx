@@ -12,7 +12,7 @@ import { RideDetailScreen } from './features/rides/RideDetailScreen'
 
 function LoadingScreen() {
   return (
-    <div style={{ display: 'grid', placeItems: 'center', minHeight: '100dvh', color: 'var(--color-text-secondary)' }}>
+    <div style={{ display: 'grid', placeItems: 'center', minHeight: '100%', color: 'var(--color-text-secondary)' }}>
       Loading…
     </div>
   )
